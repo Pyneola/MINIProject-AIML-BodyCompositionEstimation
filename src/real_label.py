@@ -19,7 +19,7 @@ HT2_CUT = {1.0: 7.0, 2.0: 5.5}
 def build():
     demo = pd.read_sas(RAW / "DEMO_J.XPT")[["SEQN", "RIAGENDR", "RIDAGEYR"]]
     bmx = pd.read_sas(RAW / "BMX_J.XPT")[["SEQN", "BMXWT", "BMXHT", "BMXBMI"] + CIRC]
-    dxx = pd.read_sas(RAW / "DXX_J.xpt")[["SEQN", "DXDTOFAT", "DXDTOLE", "DXDTOBMC", "DXDLALE", "DXDRALE", "DXDLLLE", "DXDRLLE"]]
+    dxx = pd.read_sas(RAW / "DXX_J.xpt")[["SEQN", "DXDTOFAT", "DXDTOLE", "DXDTOBMC", "DXDLALE", "DXDRALE", "DXDLLLE", "DXDRLLE", "DXDTRLE", "DXDHELE"]]
     diet = pd.read_sas(RAW / "DR1TOT_J.XPT")
     diet = diet[diet.DR1DRSTZ == 1][["SEQN", "DR1TKCAL", "DR1TPROT"]]
     sleep = pd.read_sas(RAW / "SLQ_J.XPT")[["SEQN", "SLD012"]]
@@ -31,10 +31,13 @@ def build():
     d = d[(d.RIDAGEYR >= 18) & (d.RIDAGEYR <= 59)].copy()
 
     d["ALM_KG"] = (d.DXDLALE + d.DXDRALE + d.DXDLLLE + d.DXDRLLE) / 1000
+    # trunk lean is missing in about 8% of scans, but total lean equals head + trunk + arms + legs, so it can be filled from the rest
+    trunk = d.DXDTRLE.fillna(d.DXDTOLE - d.DXDHELE - d.DXDLALE - d.DXDRALE - d.DXDLLLE - d.DXDRLLE)
+    d["TRUNK_KG"] = trunk / 1000
     d["FAT_KG"] = d.DXDTOFAT / 1000
     d["LEAN_KG"] = d.DXDTOLE / 1000
     d["FAT_PCT"] = d.DXDTOFAT / (d.DXDTOFAT + d.DXDTOLE + d.DXDTOBMC) * 100
-    need = ["ALM_KG", "FAT_KG", "LEAN_KG", "FAT_PCT"] + BASIC + CIRC
+    need = ["ALM_KG", "TRUNK_KG", "FAT_KG", "LEAN_KG", "FAT_PCT"] + BASIC + CIRC
     d = d.dropna(subset=need).copy()
 
     for c in ["PAQ605", "PAQ620", "PAQ635", "PAQ650", "PAQ665"]:
@@ -43,7 +46,7 @@ def build():
 
     d["LOW_FNIH"] = (d.ALM_KG / d.BMXBMI < d.RIAGENDR.map(FNIH_CUT)).astype(int)
     d["LOW_HT2"] = (d.ALM_KG / (d.BMXHT / 100) ** 2 < d.RIAGENDR.map(HT2_CUT)).astype(int)
-    cols = ["SEQN"] + BASIC + CIRC + LIFE + ["FAT_PCT", "FAT_KG", "LEAN_KG", "ALM_KG", "LOW_FNIH", "LOW_HT2"]
+    cols = ["SEQN"] + BASIC + CIRC + LIFE + ["FAT_PCT", "FAT_KG", "LEAN_KG", "ALM_KG", "TRUNK_KG", "LOW_FNIH", "LOW_HT2"]
     return d[cols].reset_index(drop=True), n_adults
 
 
