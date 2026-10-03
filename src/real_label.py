@@ -12,6 +12,8 @@ BASIC = ["RIAGENDR", "RIDAGEYR", "BMXWT", "BMXHT", "BMXBMI"]
 CIRC = ["BMXWAIST", "BMXHIP", "BMXARMC", "BMXARML", "BMXLEG"]
 LIFE = ["DR1TKCAL", "DR1TPROT", "SLD012", "PAQ605", "PAQ620", "PAQ635", "PAQ650", "PAQ665", "PAD680"]
 
+FNIH_CUT = {1.0: 0.789, 2.0: 0.512}
+HT2_CUT = {1.0: 7.0, 2.0: 5.5}
 
 
 def build():
@@ -39,7 +41,9 @@ def build():
         d[c] = (d[c] == 1).astype(float)
     d["PAD680"] = d.PAD680.where(d.PAD680 < 9000)
 
-    cols = ["SEQN"] + BASIC + CIRC + LIFE + ["FAT_PCT", "FAT_KG", "LEAN_KG", "ALM_KG"]
+    d["LOW_FNIH"] = (d.ALM_KG / d.BMXBMI < d.RIAGENDR.map(FNIH_CUT)).astype(int)
+    d["LOW_HT2"] = (d.ALM_KG / (d.BMXHT / 100) ** 2 < d.RIAGENDR.map(HT2_CUT)).astype(int)
+    cols = ["SEQN"] + BASIC + CIRC + LIFE + ["FAT_PCT", "FAT_KG", "LEAN_KG", "ALM_KG", "LOW_FNIH", "LOW_HT2"]
     return d[cols].reset_index(drop=True), n_adults
 
 
@@ -47,3 +51,4 @@ if __name__ == "__main__":
     df, n = build()
     df.to_csv(OUT, index=False)
     print(f"adults 18-59: {n} -> complete DXA + body measures: {len(df)}")
+    print("LOW_FNIH", int(df.LOW_FNIH.sum()), "LOW_HT2", int(df.LOW_HT2.sum()))
