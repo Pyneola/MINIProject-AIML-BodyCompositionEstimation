@@ -42,3 +42,8 @@ def build():
     cols = ["SEQN"] + BASIC + CIRC + LIFE + ["FAT_PCT", "FAT_KG", "LEAN_KG", "ALM_KG"]
     return d[cols].reset_index(drop=True), n_adults
 
+
+if __name__ == "__main__":
+    df, n = build()
+    df.to_csv(OUT, index=False)
+    print(f"adults 18-59: {n} -> complete DXA + body measures: {len(df)}")
