@@ -6,9 +6,11 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parent.parent
 RAW = ROOT / "data" / "raw"
+OUT = ROOT / "data" / "processed" / "nhanes_real_dxa.csv"
 
 BASIC = ["RIAGENDR", "RIDAGEYR", "BMXWT", "BMXHT", "BMXBMI"]
 CIRC = ["BMXWAIST", "BMXHIP", "BMXARMC", "BMXARML", "BMXLEG"]
+LIFE = ["DR1TKCAL", "DR1TPROT", "SLD012", "PAQ605", "PAQ620", "PAQ635", "PAQ650", "PAQ665", "PAD680"]
 
 
 
@@ -16,8 +18,13 @@ def build():
     demo = pd.read_sas(RAW / "DEMO_J.XPT")[["SEQN", "RIAGENDR", "RIDAGEYR"]]
     bmx = pd.read_sas(RAW / "BMX_J.XPT")[["SEQN", "BMXWT", "BMXHT", "BMXBMI"] + CIRC]
     dxx = pd.read_sas(RAW / "DXX_J.xpt")[["SEQN", "DXDTOFAT", "DXDTOLE", "DXDTOBMC", "DXDLALE", "DXDRALE", "DXDLLLE", "DXDRLLE"]]
+    diet = pd.read_sas(RAW / "DR1TOT_J.XPT")
+    diet = diet[diet.DR1DRSTZ == 1][["SEQN", "DR1TKCAL", "DR1TPROT"]]
+    sleep = pd.read_sas(RAW / "SLQ_J.XPT")[["SEQN", "SLD012"]]
+    pa = pd.read_sas(RAW / "PAQ_J.XPT")[["SEQN", "PAQ605", "PAQ620", "PAQ635", "PAQ650", "PAQ665", "PAD680"]]
 
-    d = demo.merge(bmx, on="SEQN").merge(dxx, on="SEQN")
+    d = (demo.merge(bmx, on="SEQN").merge(dxx, on="SEQN").merge(diet, on="SEQN", how="left")
+         .merge(sleep, on="SEQN", how="left").merge(pa, on="SEQN", how="left"))
     n_adults = int(((d.RIDAGEYR >= 18) & (d.RIDAGEYR <= 59)).sum())
     d = d[(d.RIDAGEYR >= 18) & (d.RIDAGEYR <= 59)].copy()
 
@@ -28,6 +35,10 @@ def build():
     need = ["ALM_KG", "FAT_KG", "LEAN_KG", "FAT_PCT"] + BASIC + CIRC
     d = d.dropna(subset=need).copy()
 
-    cols = ["SEQN"] + BASIC + CIRC + ["FAT_PCT", "FAT_KG", "LEAN_KG", "ALM_KG"]
+    for c in ["PAQ605", "PAQ620", "PAQ635", "PAQ650", "PAQ665"]:
+        d[c] = (d[c] == 1).astype(float)
+    d["PAD680"] = d.PAD680.where(d.PAD680 < 9000)
+
+    cols = ["SEQN"] + BASIC + CIRC + LIFE + ["FAT_PCT", "FAT_KG", "LEAN_KG", "ALM_KG"]
     return d[cols].reset_index(drop=True), n_adults
 
