@@ -6,3 +6,7 @@ matplotlib>=3.10,<4
 seaborn>=0.13,<1
 scipy>=1.16,<2
 jupyter>=1.0
+
+fastapi>=0.128,<1
+uvicorn>=0.40,<1
+pydantic>=2.12,<3
