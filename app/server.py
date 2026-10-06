@@ -40,15 +40,35 @@ class EstimateRequest(BaseModel):
 
 @app.post("/predict")
 def estimate(payload: EstimateRequest):
-    bundle = load()["bundle"]
+    try:
+        st = load()
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+    bundle = st["bundle"]
     d = payload.model_dump()
     d["BMXBMI"] = d["BMXWT"] / (d["BMXHT"] / 100) ** 2
     df = pd.DataFrame([[d[f] for f in bundle["features"]]], columns=bundle["features"])
     est = {t: float(m.predict(df)[0]) for t, m in bundle["regressors"].items()}
+    ridge = {t: float(m.predict(df)[0]) for t, m in bundle["ridge"].items()}
+
+    alm = est["ALM_KG"]
+    almi = alm / (d["BMXHT"] / 100) ** 2
+    alm_bmi = alm / d["BMXBMI"]
+    screen = {}
+    for lab in ("LOW_HT2", "LOW_FNIH"):
+        p = float(bundle["classifiers"][lab].predict_proba(df)[0, 1])
+        screen[lab] = {"probability": float(p),
+                       "refer_sens90": bool(p >= bundle["thresholds"][lab]["0.9"]),
+                       "refer_sens80": bool(p >= bundle["thresholds"][lab]["0.8"])}
     return {
         "success": True,
+        "source": "AI_MODEL",
         "bmi": d["BMXBMI"],
         "fatPct": est["FAT_PCT"], "leanKg": est["LEAN_KG"], "almKg": est["ALM_KG"], "trunkKg": est["TRUNK_KG"],
+        "almi": almi, "almPerBmi": alm_bmi,
+        "ridge": {"fatPct": ridge["FAT_PCT"], "leanKg": ridge["LEAN_KG"], "almKg": ridge["ALM_KG"], "trunkKg": ridge["TRUNK_KG"]},
+        "testMae": {"fatPct": bundle["test_mae"]["FAT_PCT"], "leanKg": bundle["test_mae"]["LEAN_KG"], "almKg": bundle["test_mae"]["ALM_KG"], "trunkKg": bundle["test_mae"]["TRUNK_KG"]},
+        "screen": screen,
     }
 
 
