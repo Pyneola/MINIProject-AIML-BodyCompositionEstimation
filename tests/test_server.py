@@ -40,3 +40,9 @@ def test_predict_valid_input_returns_estimates():
     assert 5 < body["almKg"] < 45
     assert 5 < body["trunkKg"] < 60
     assert 0 <= body["screen"]["LOW_HT2"]["probability"] <= 1
+
+
+def test_xgboost_fat_agrees_with_ridge_within_range():
+    body = client.post("/predict", json=VALID_PAYLOAD).json()
+    assert abs(body["fatPct"] - body["ridge"]["fatPct"]) < 6
+    assert body["leanKg"] == body["ridge"]["leanKg"]
