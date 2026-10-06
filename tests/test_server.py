@@ -59,3 +59,9 @@ def test_screening_flags_low_muscle_profile():
 def test_predict_rejects_weight_out_of_range():
     resp = client.post("/predict", json=dict(VALID_PAYLOAD, BMXWT=400))
     assert resp.status_code == 422
+
+
+def test_predict_rejects_missing_field():
+    payload = dict(VALID_PAYLOAD)
+    del payload["BMXWAIST"]
+    assert client.post("/predict", json=payload).status_code == 422
