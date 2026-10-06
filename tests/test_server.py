@@ -54,3 +54,8 @@ def test_screening_flags_low_muscle_profile():
     p_low = client.post("/predict", json=low).json()["screen"]["LOW_HT2"]["probability"]
     p_high = client.post("/predict", json=high).json()["screen"]["LOW_HT2"]["probability"]
     assert p_low > p_high
+
+
+def test_predict_rejects_weight_out_of_range():
+    resp = client.post("/predict", json=dict(VALID_PAYLOAD, BMXWT=400))
+    assert resp.status_code == 422
