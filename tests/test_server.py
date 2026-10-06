@@ -46,3 +46,11 @@ def test_xgboost_fat_agrees_with_ridge_within_range():
     body = client.post("/predict", json=VALID_PAYLOAD).json()
     assert abs(body["fatPct"] - body["ridge"]["fatPct"]) < 6
     assert body["leanKg"] == body["ridge"]["leanKg"]
+
+
+def test_screening_flags_low_muscle_profile():
+    low = dict(VALID_PAYLOAD, BMXWT=60, BMXHT=178, BMXARMC=24, BMXWAIST=76, BMXHIP=88)
+    high = dict(VALID_PAYLOAD, BMXWT=85, BMXHT=172, BMXARMC=35, BMXWAIST=86, BMXHIP=100)
+    p_low = client.post("/predict", json=low).json()["screen"]["LOW_HT2"]["probability"]
+    p_high = client.post("/predict", json=high).json()["screen"]["LOW_HT2"]["probability"]
+    assert p_low > p_high
