@@ -3,11 +3,21 @@ import os
 import joblib
 import pandas as pd
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 app = FastAPI(
     title="Body Composition Estimator API",
     description="Estimates Fat % (XGBoost), Lean mass and ALM (Ridge) from body measurements, and screens for low muscle mass (Logistic Regression)."
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://127.0.0.1:8000", "http://localhost:8000"],
+    allow_credentials=False,
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type"],
 )
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -85,3 +95,7 @@ def server_health():
         "error": error_msg,
         "paths": {"models": MODELS_DIR},
     }
+
+
+# mounted last so the API routes match first
+app.mount("/", StaticFiles(directory=CURRENT_DIR, html=True), name="frontend")
