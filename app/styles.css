@@ -44,3 +44,45 @@ h2 { font-family: var(--head); font-weight: 600; font-size: 1.35rem; margin-bott
 h3 { font-family: var(--head); font-weight: 600; font-size: 1.02rem; margin: 22px 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--rule); }
 h4 { font-family: var(--head); font-weight: 600; font-size: 1rem; margin-bottom: 4px; }
 
+/* form */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 16px; }
+.input-group label { display: flex; align-items: center; gap: 8px; font-size: 0.92rem; font-weight: 500; margin-bottom: 4px; }
+.input-group input,
+.input-group select {
+    width: 100%; height: 44px; padding: 0 12px; font: inherit; font-size: 1rem; color: var(--ink);
+    background: #fbfcfd; border: 1px solid #c9d3dd; border-radius: 6px;
+}
+.input-group input:focus,
+.input-group select:focus { outline: 3px solid rgba(246, 194, 27, 0.55); border-color: var(--ink); background: #fff; }
+.input-error { border-color: var(--pin) !important; background: #fff5f4 !important; }
+.hint { font-size: 0.8rem; color: var(--muted); line-height: 1.45; margin-top: 4px; }
+
+.no {
+    flex: none; width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--head); font-weight: 700; font-size: 0.8rem; color: #fff; background: var(--pin);
+}
+.no.blue { background: var(--accent-primary); }
+
+.circ { display: grid; grid-template-columns: minmax(0, 1fr) 170px; gap: 22px; align-items: start; }
+.circ .form-grid { grid-template-columns: 1fr; }
+.figure { position: sticky; top: 16px; }
+.figure svg { display: block; width: 100%; height: auto; }
+.mk { opacity: 0.55; transition: opacity 0.15s; }
+.mk.on { opacity: 1; }
+.mk.on .mk-line { stroke-width: 5; }
+.figure figcaption { font-size: 0.76rem; color: var(--muted); text-align: center; margin-top: 4px; line-height: 1.4; }
+
+.range-note { margin-top: 18px; font-size: 0.82rem; color: var(--muted); }
+.source-note { margin-top: 6px; font-size: 0.78rem; color: var(--muted); }
+
+.btn-predict {
+    margin-top: 22px; width: 100%; height: 50px; font-family: var(--head); font-weight: 600; font-size: 1.05rem;
+    color: var(--ink); background: var(--tape); border: 0; border-radius: 6px; cursor: pointer; transition: filter 0.12s;
+}
+.btn-predict:hover { filter: brightness(0.95); }
+.btn-predict:active { filter: brightness(0.9); }
+.btn-predict:focus-visible { outline: 3px solid var(--accent-primary); outline-offset: 3px; }
+
+.validation-error-card { margin-bottom: 14px; padding: 12px 14px; background: #fff5f4; border-radius: 6px; font-size: 0.9rem; }
+.validation-error-card ul { margin: 6px 0 0 18px; }
+
