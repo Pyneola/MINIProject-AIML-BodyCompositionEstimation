@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ประมาณเปอร์เซ็นต์ไขมันและมวลกล้ามเนื้อ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=5">
+</head>
+
+<body>
+    <div class="tape" aria-hidden="true"></div>
+
+    <div class="container">
+        <header>
+            <h1 class="brand">ประมาณเปอร์เซ็นต์ไขมันและมวลกล้ามเนื้อ</h1>
+            <p class="subtitle">ประมาณเปอร์เซ็นต์ไขมันและมวลกล้ามเนื้อจากค่าวัดร่างกาย เรียนรู้จากผลสแกน DXA จริงของ
+                NHANES 2017-2018</p>
+            <details class="dxa">
+                <summary>DXA คืออะไร</summary>
+                <p>เครื่องสแกนด้วยรังสีเอกซ์ปริมาณต่ำที่แยกมวลไขมัน กล้ามเนื้อ และกระดูกได้แม่นยำ
+                </p>
+            </details>
+        </header>
+
+        <main class="grid-layout">
+            <section class="sheet input-card">
+                <h2>ค่าวัดร่างกาย</h2>
+                <form id="est-form" novalidate>
+                    <div id="validation-error" class="validation-error-card hidden"></div>
+
+                    <h3>ข้อมูลพื้นฐาน</h3>
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label for="age">อายุ</label>
+                            <div class="field"><input type="number" id="age" min="18" max="59" value="30" required><span
+                                    class="unit">ปี</span></div>
+                        </div>
+                        <div class="input-group">
+                            <label for="gender">เพศ</label>
+                            <select id="gender" required>
+                                <option value="1.0">ชาย</option>
+                                <option value="2.0">หญิง</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="weight">น้ำหนัก</label>
+                            <div class="field"><input type="number" id="weight" min="36" max="177" step="0.1" value="75"
+                                    required><span class="unit">กก.</span></div>
+                        </div>
+                        <div class="input-group">
+                            <label for="height">ส่วนสูง</label>
+                            <div class="field"><input type="number" id="height" min="138" max="191" step="0.1"
+                                    value="172" required><span class="unit">ซม.</span></div>
+                        </div>
+                    </div>
+
+                    <h3>เส้นรอบวงและความยาว</h3>
+                    <div class="circ">
+                        <div class="form-grid">
+                            <div class="input-group">
+                                <label for="waist"><span class="no">1</span>รอบเอว</label>
+                                <div class="field"><input type="number" id="waist" min="56" max="155" step="0.1"
+                                        value="88" required><span class="unit">ซม.</span></div>
+                                <p class="hint">วัดรอบตัวเหนือขอบบนกระดูกเชิงกราน ตอนหายใจออกตามปกติ สายวัดขนานพื้น</p>
+                            </div>
+                            <div class="input-group">
+                                <label for="hip"><span class="no">2</span>รอบสะโพก</label>
+                                <div class="field"><input type="number" id="hip" min="77" max="169" step="0.1"
+                                        value="100" required><span class="unit">ซม.</span></div>
+                                <p class="hint">วัดรอบตัวตรงจุดที่สะโพกนูนที่สุดเมื่อมองจากด้านข้าง</p>
+                            </div>
+                            <div class="input-group">
+                                <label for="armc"><span class="no">3</span>รอบต้นแขน</label>
+                                <div class="field"><input type="number" id="armc" min="20" max="53" step="0.1"
+                                        value="31" required><span class="unit">ซม.</span></div>
+                                <p class="hint">แขนห้อยปล่อยตัว ไม่เกร็ง วัดตรงกึ่งกลางความยาวแขนท่อนบน</p>
+                            </div>
+                            <div class="input-group">
+                                <label for="arml"><span class="no blue">4</span>ความยาวแขนท่อนบน</label>
+                                <div class="field"><input type="number" id="arml" min="29" max="46" step="0.1"
+                                        value="37" required><span class="unit">ซม.</span></div>
+                                <p class="hint">จากปลายไหล่ถึงปลายข้อศอกด้านหลัง ขณะงอศอก 90 องศา</p>
+                            </div>
+                            <div class="input-group">
+                                <label for="leg"><span class="no blue">5</span>ความยาวขาท่อนบน</label>
+                                <div class="field"><input type="number" id="leg" min="26" max="50" step="0.1" value="39"
+                                        required><span class="unit">ซม.</span></div>
+                                <p class="hint">นั่งเข่างอ 90 องศา วัดจากรอยพับขาหนีบตามแนวกลางต้นขาด้านหน้า
+                                    ถึงขอบบนของกระดูกสะบ้า</p>
+                            </div>
+                        </div>
+
+                        <figure class="figure">
+                            <svg viewBox="0 0 300 420" role="img" aria-label="ตำแหน่งที่ใช้วัดร่างกาย"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <g fill="#eef2f6" stroke="#aab6c3" stroke-width="1.5" stroke-linejoin="round">
+                                    <circle cx="150" cy="40" r="24" />
+                                    <rect x="141" y="62" width="18" height="16" />
+                                    <path d="M100 82 Q150 70 200 82 L188 170 L200 228 L100 228 L112 170 Z" />
+                                    <path d="M100 86 L80 165 L72 238" fill="none" stroke-width="16"
+                                        stroke-linecap="round" />
+                                    <path d="M200 86 L220 165 L228 238" fill="none" stroke-width="16"
+                                        stroke-linecap="round" />
+                                    <path d="M125 228 L122 398" fill="none" stroke-width="34" stroke-linecap="round" />
+                                    <path d="M175 228 L178 398" fill="none" stroke-width="34" stroke-linecap="round" />
+                                </g>
+                                <g class="mk" data-for="waist">
+                                    <line class="mk-line" x1="106" y1="172" x2="194" y2="172" stroke="#d4352b"
+                                        stroke-width="3" stroke-linecap="round" />
+                                    <circle cx="228" cy="172" r="11" fill="#d4352b" /><text x="228" y="177"
+                                        text-anchor="middle" font-size="14" font-weight="700" fill="#fff">1</text>
+                                </g>
+                                <g class="mk" data-for="hip">
+                                    <line class="mk-line" x1="94" y1="222" x2="206" y2="222" stroke="#d4352b"
+                                        stroke-width="3" stroke-linecap="round" />
+                                    <circle cx="228" cy="222" r="11" fill="#d4352b" /><text x="228" y="227"
+                                        text-anchor="middle" font-size="14" font-weight="700" fill="#fff">2</text>
+                                </g>
+                                <g class="mk" data-for="armc">
+                                    <line class="mk-line" x1="75" y1="126" x2="99" y2="120" stroke="#d4352b"
+                                        stroke-width="3" stroke-linecap="round" />
+                                    <circle cx="48" cy="120" r="11" fill="#d4352b" /><text x="48" y="125"
+                                        text-anchor="middle" font-size="14" font-weight="700" fill="#fff">3</text>
+                                </g>
+                                <g class="mk" data-for="arml">
+                                    <line class="mk-line" x1="86" y1="84" x2="66" y2="165" stroke="#1e5aa8"
+                                        stroke-width="3" stroke-linecap="round" />
+                                    <circle cx="46" cy="160" r="11" fill="#1e5aa8" /><text x="46" y="165"
+                                        text-anchor="middle" font-size="14" font-weight="700" fill="#fff">4</text>
+                                </g>
+                                <g class="mk" data-for="leg">
+                                    <line class="mk-line" x1="137" y1="236" x2="133" y2="306" stroke="#1e5aa8"
+                                        stroke-width="3" stroke-linecap="round" />
+                                    <circle cx="96" cy="270" r="11" fill="#1e5aa8" /><text x="96" y="275"
+                                        text-anchor="middle" font-size="14" font-weight="700" fill="#fff">5</text>
+                                </g>
+                            </svg>
+                            <figcaption>กดช่องกรอกเพื่อดูตำแหน่งวัด</figcaption>
+                        </figure>
+                    </div>
+
+                    <details class="notes">
+                        <summary>ข้อควรรู้ก่อนวัด</summary>
+                        <p>ช่วงค่าที่กรอกได้จำกัดตามข้อมูลที่ใช้สอนโมเดล (ผู้ใหญ่ 18-59 ปี) ค่านอกช่วงนี้โมเดลไม่เคยเห็น
+                            ผลจึงไม่น่าเชื่อถือ</p>
+                        <p>วิธีวัดตามคู่มือ NHANES Anthropometry 2017 วัดข้างขวาของร่างกาย
+                            ค่าที่ใช้สอนโมเดลวัดโดยเจ้าหน้าที่ที่ฝึกมา ผู้วัดเองอาจคลาดเคลื่อนมากกว่า</p>
+                    </details>
+
+                    <div class="actions">
+                        <button type="submit" class="btn-predict">ประมาณค่า</button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="sheet output-card">
+                <h2>ผลการประมาณ</h2>
+                <div class="engine-badge" id="source-badge">กำลังเชื่อมต่อเซิร์ฟเวอร์</div>
+
+                <p class="section-intro">เป็นค่าประมาณจากค่าวัดร่างกาย ไม่ใช่ผลสแกน DXA และไม่ใช่การวินิจฉัยทางการแพทย์
+                </p>
+
+                <div class="output-placeholder" id="placeholder-box">
+                    <p>กรอกค่าวัดทางซ้าย แล้วกด “ประมาณค่า”</p>
+                </div>
+
+                <div class="output-content hidden" id="output-box">
+                    <p class="heavy-warning hidden" id="heavy-warning">น้ำหนักเกิน 120 กก.
+                        ข้อมูลที่ใช้สอนโมเดลมีคนกลุ่มนี้น้อย (น้ำหนัก 150 กก. ขึ้นไปมีแค่ 6 คนจาก 2,310 คน)
+                        ผลอาจคลาดเคลื่อนมากกว่าปกติ</p>
+
+                    <dl class="report">
+                        <div class="row fat">
+                            <dt>ไขมันในร่างกาย<small>Body fat</small></dt>
+                            <dd id="fat-val">30.0 %</dd>
+                        </div>
+                        <div class="row lean">
+                            <dt>มวลกล้ามเนื้อทั้งตัว<small>Lean mass</small></dt>
+                            <dd id="lean-val">50.0 กก.</dd>
+                        </div>
+                        <div class="row">
+                            <dt>มวลกล้ามเนื้อแขนและขา<small>ALM</small></dt>
+                            <dd id="alm-val">22.0 กก.</dd>
+                        </div>
+                        <div class="row">
+                            <dt>มวลกล้ามเนื้อลำตัว<small>Trunk lean mass</small></dt>
+                            <dd id="trunk-val">25.0 กก.</dd>
+                        </div>
+                    </dl>
+
+                    <div class="muscle">
+                        <h3>ดูว่ากล้ามเนื้อน้อยหรือไม่</h3>
+                        <div class="ruler-label">
+                            <span>ดัชนีมวลกล้ามเนื้อแขนขา (กก./ม²)</span>
+                            <span class="bar-val-text" id="almi-text">7.4</span>
+                        </div>
+                        <div class="bar-outer">
+                            <div class="bar-inner" id="bar-almi" style="width: 50%;"></div>
+                            <div class="bar-tick" id="tick-almi"></div>
+                        </div>
+                        <div class="ruler-scale"><span>0</span><span>4</span><span>8</span><span>12</span></div>
+                        <small id="almi-cut" class="range-description"></small>
+                        <div class="status-badge" id="screen-badge">สรุป ตอนนี้กล้ามเนื้อยังไม่ต่ำกว่าเกณฑ์</div>
+                    </div>
+
+                    <details class="guide">
+                        <summary>วิธีอ่านผล</summary>
+                        <dl>
+                            <dt>ไขมันในร่างกาย</dt>
+                            <dd>เปอร์เซ็นต์ไขมันต่อน้ำหนักตัว (ค่าเทียบเท่าผลสแกน DXA)</dd>
+                            <dt>มวลกล้ามเนื้อทั้งตัว</dt>
+                            <dd>ที่เครื่อง DXA เรียกว่า lean mass คือส่วนที่ไม่ใช่ไขมันและกระดูก ส่วนใหญ่เป็นกล้ามเนื้อ
+                                แต่รวมอวัยวะและน้ำด้วย</dd>
+                            <dt>มวลกล้ามเนื้อแขนและขา</dt>
+                            <dd>กล้ามเนื้อของแขนสองข้างและขาสองข้างรวมกัน ใช้ดูว่ากล้ามเนื้อน้อยเกินไปหรือไม่
+                                ดัชนีคำนวณจากมวลนี้หารด้วยส่วนสูงยกกำลังสอง</dd>
+                            <dt>มวลกล้ามเนื้อลำตัว</dt>
+                            <dd>ส่วนของอก หลัง ท้อง สะโพก รวมอวัยวะภายใน จึงไม่ใช่กล้ามเนื้อล้วน</dd>
+                        </dl>
+                    </details>
+                </div>
+            </section>
+        </main>
+
+        <details class="method">
+            <summary>วิธีการและข้อจำกัด</summary>
+            <div class="method-grid">
+                <div class="method-col">
+                    <h4>1. ข้อมูลที่ใช้</h4>
+                    <p>ข้อมูลสำรวจสุขภาพของผู้ใหญ่สหรัฐฯ อายุ 18-59 ปี (NHANES 2017-2018) จำนวน 3,515 คน มีผลสแกน DXA
+                        และค่าวัดร่างกายครบ 2,310 คน แบ่งเป็นชุดสอนโมเดล 1,848 คน และชุดทดสอบ 462 คน ค่าเฉลยเป็นผลสแกน
+                        DXA จริง ไม่ได้จำลอง</p>
+                </div>
+                <div class="method-col">
+                    <h4>2. โมเดล</h4>
+                    <p>ลองเปรียบเทียบ 3 วิธี (Ridge, Random Forest, XGBoost) แล้วเลือกให้เหมาะกับแต่ละค่า ไขมันใช้
+                        XGBoost ส่วนมวลกล้ามเนื้อใช้ Ridge เพราะทายคนตัวใหญ่ได้ดีกว่า ส่วนการคัดกรองใช้ Logistic
+                        Regression</p>
+                </div>
+                <div class="method-col">
+                    <h4>3. ผลบนชุดทดสอบ</h4>
+                    <p>คะแนนความแม่น R² (เต็ม 1) ไขมัน 0.84 มวลกล้ามเนื้อทั้งตัว 0.95 แขนและขา 0.93
+                        ค่าไขมันคลาดเคลื่อนน้อยกว่าสูตรสำเร็จรูป (Deurenberg) ราว 40%
+                        การคัดกรองจับผู้ที่ต่ำกว่าเกณฑ์จริงได้ 91% โดยเตือน 18% ของคน (ในคนที่ถูกเตือน ถูกต้องราว 51%)
+                    </p>
+                </div>
+                <div class="method-col">
+                    <h4>4. ข้อค้นพบ</h4>
+                    <p>ค่าเส้นรอบวง (เอว สะโพก) ช่วยให้ทายแม่นขึ้น ส่วนอาหาร การนอน
+                        และการออกกำลังกายไม่ช่วยเพิ่มความแม่นจากข้อมูลชุดนี้ วิธีแบบต้นไม้ (Random Forest, XGBoost)
+                        ทายคนที่ตัวใหญ่กว่าที่เคยเห็นพลาดมาก จึงใช้ Ridge กับมวลกล้ามเนื้อ และจำกัดช่วงค่าที่กรอก</p>
+                </div>
+            </div>
+            <p class="disclaimer-note"><strong>ข้อจำกัดสำคัญ</strong> ข้อมูลผู้ใหญ่สหรัฐฯ ปี 2017-18 อายุ 18-59
+                ผู้ที่มีน้ำหนักมากมักไม่มีผล DXA
+                จึงมีตัวอย่างน้อย ผลเป็นการประมาณเพื่อการศึกษา <strong>ไม่ใช่การวินิจฉัยหรือคำแนะนำทางการแพทย์</strong>
+            </p>
+        </details>
+    </div>
+
+    <script src="app.js?v=3"></script>
+</body>
+
+</html>
