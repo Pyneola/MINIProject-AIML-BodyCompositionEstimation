@@ -65,3 +65,7 @@ def test_predict_rejects_missing_field():
     payload = dict(VALID_PAYLOAD)
     del payload["BMXWAIST"]
     assert client.post("/predict", json=payload).status_code == 422
+
+
+def test_predict_rejects_invalid_gender():
+    assert client.post("/predict", json=dict(VALID_PAYLOAD, RIAGENDR=3.0)).status_code == 422
