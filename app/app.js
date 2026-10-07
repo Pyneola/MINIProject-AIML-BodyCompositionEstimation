@@ -122,4 +122,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function set(id, text) { document.getElementById(id).textContent = text; }
 
+    function setBadge(text, active) {
+        sourceBadge.textContent = text;
+        sourceBadge.style.background = active ? 'rgba(59, 130, 246, 0.08)' : '#f3f4f6';
+        sourceBadge.style.borderColor = active ? 'var(--accent-primary)' : 'var(--border-color)';
+        sourceBadge.style.color = active ? 'var(--accent-primary)' : 'var(--text-secondary)';
+    }
+
+    fetch('http://127.0.0.1:8000/health')
+        .then(res => res.json())
+        .then(data => data.models_status === 'loaded' ? setBadge('ต่อเซิร์ฟเวอร์แล้ว', true) : serverDown())
+        .catch(serverDown);
 });
