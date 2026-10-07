@@ -94,4 +94,32 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(() => run(false), 450); });
     run(false);
 
+    function render(r) {
+        const almi = r.almKg / Math.pow(r.height / 100, 2);
+        const cut = ALMI_CUT[r.gender];
+        set('fat-val', `${r.fatPct.toFixed(1)} %`);
+        set('lean-val', `${r.leanKg.toFixed(1)} กก.`);
+        set('alm-val', `${r.almKg.toFixed(1)} กก.`);
+        set('trunk-val', `${r.trunkKg.toFixed(1)} กก.`);
+        set('almi-text', almi.toFixed(2));
+        set('almi-cut', `เกณฑ์อ้างอิง ถ้าต่ำกว่า ${cut.toFixed(1)} กก./ม² (${r.gender === 1 ? 'ชาย' : 'หญิง'}) ถือว่ามวลกล้ามเนื้อต่ำ`);
+        const ALMI_MAX = 12;
+        document.getElementById('bar-almi').style.width = `${Math.max(0, Math.min(100, (almi / ALMI_MAX) * 100))}%`;
+        document.getElementById('tick-almi').style.left = `${(cut / ALMI_MAX) * 100}%`;
+
+        const flagged = r.refer90;
+        let text = flagged ? 'สรุป โมเดลคัดกรองแนะนำให้ตรวจ DXA เพื่อยืนยัน' : 'สรุป ตอนนี้กล้ามเนื้อยังไม่ต่ำกว่าเกณฑ์';
+        if (flagged && almi >= cut) text += ' (ดัชนีที่แสดงอยู่ใกล้เกณฑ์ ค่าประมาณคลาดเคลื่อนได้)';
+        if (!flagged && almi < cut) text += ' (ดัชนีที่แสดงต่ำกว่าเกณฑ์เล็กน้อย ค่าประมาณคลาดเคลื่อนได้)';
+        const color = flagged ? '#d97706' : '#0f766e';
+        document.getElementById('heavy-warning').classList.toggle('hidden', !(r.weight > 120));
+        screenBadge.textContent = text;
+        screenBadge.style.color = color;
+
+        placeholderBox.classList.add('hidden');
+        outputBox.classList.remove('hidden');
+    }
+
+    function set(id, text) { document.getElementById(id).textContent = text; }
+
 });
