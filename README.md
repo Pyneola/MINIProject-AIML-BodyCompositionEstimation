@@ -6,3 +6,14 @@
 
 NHANES 2017-2018 (CDC / NCHS, https://www.cdc.gov/nchs/nhanes/) ใช้ไฟล์ DEMO_J, BMX_J, DXX_J, DR1TOT_J, SLQ_J, PAQ_J ที่อยู่ใน `data/raw/`
 
+## ผลหลัก (Test set 462 คน)
+
+| ค่าที่ประมาณ | Model | R² | MAE ก่อน train → หลัง train |
+|---|---|---|---|
+| ไขมัน (%) | XGBoost | 0.84 | 7.20 → 2.75 จุด (สูตร Deurenberg 4.61) |
+| มวลกล้ามเนื้อทั้งตัว | Ridge | 0.95 | 10.49 → 2.24 กก. |
+| มวลกล้ามเนื้อแขน+ขา (ALM) | Ridge | 0.93 | 5.26 → 1.34 กก. |
+| มวลกล้ามเนื้อลำตัว | Ridge | 0.93 | 5.10 → 1.29 กก. |
+
+คัดกรองผู้ที่มีมวลกล้ามเนื้อต่ำด้วย Logistic Regression (เกณฑ์ ALM/ส่วนสูง²) แนะนำตรวจซ้ำ 18% ของคน Recall 91% Precision 51% F1 0.66
+
